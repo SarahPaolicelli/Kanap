@@ -24,9 +24,8 @@ function showResult(data) {
   let basket = getBasket()
   if (basket.length >= 1) {
     let cart__items = document.getElementById("cart__items")
-    let basket = getBasket()
     for (let product of basket) {
-      productInfos = data.find(obj => { return obj._id === product.id })
+      productInfos = data.find(obj => { return obj._id === product.id })      
       cart__items.insertAdjacentHTML("afterbegin",
         `<article class="cart__item" data-id="${product.id}" data-color="${product.color}">
       <div class="cart__item__img">
@@ -99,24 +98,28 @@ function changeQuantity(event) {
 }
 
 
-//Fonction qui gere la suppression des produits
+/**
+ * Supprimer un item du panier
+ * event : evenement du clic sur le bouton
+ * return : rien 
+ */
 function deleteCartItem(event) {
-    console.log("Delete event")
     let cartItemArticle = event.target.closest('.cart__item')  // recuperer l'ID du canapé concerné
     let basketItems = getBasket()   // recupere le basket du local storage   
-    for (let product of basketItems) {// je boucle sur le local storage pour trouver le canap dont l'ID == celui_du_clic     
-      if (product.id == cartItemArticle.dataset.id && product.color === cartItemArticle.dataset.color){
-        delete product
-        localStorage.removeItem(product)  // je retire du talbeau
-        console.log(product)
-        localStorage.setItem('basket', JSON.stringify(basketItems)) // je sauve le local storage
-        // on appelle showresults (qui lui va re-appeler le total)
-      break    
-      }
-}}
+    basketItems.forEach(function(product, idx) {
+        if (product.id == cartItemArticle.dataset.id && product.color === cartItemArticle.dataset.color){
+            basketItems.splice(idx, 1)
+            localStorage.setItem('basket', JSON.stringify(basketItems)) // je sauve le local storage                
+            cartItemArticle.parentNode.removeChild(cartItemArticle)
+            showBasketTotal();        
+        }
+    })
+}
 
 
-//Evenement qui précise que l'on fait la séléction des élements une fois que la page a finit de se charger//
+/**
+ * Au chargement de la page, init de tous les evenements
+ */
 window.addEventListener('load', function(event) {
     // Initialisation des evenements sur la page
 
@@ -214,48 +217,41 @@ const validEmail = function(inputEmail){
 }
 
 //fonction submitOrder
-function submitOrder(){
-  if (validFirstName(form.firstName)&&validLastName(form.lastName)&&validAddress(form.address)&&validCity(form.city)&&validEmail(form.email))
-    {if(getBasket())  {
-        let basket = JSON.parse(localStorage.getItem("basket"));
-        let products = []
-        for (let i = 0; i < basket.length; i++) {
-            products.push(basket[i].id)
-        }   
-        let contact={
-            firtName:form.firstName.value,
-            lastName:form.lastName.value,
-            address:form.address.value,
-            city:form.city.value,
-            email:form.email.value
-          }
-          console.log(contact)
-          console.log(products)
-        //let data={contact,products}
-      
-          fetch("http://localhost:3000/api/products/order",
-          {method:"POST",
-          headers:{"accept":"application/json",
-                  "content-type":"application/json"},
-          body:JSON.stringify({contact:{
-                                          firtName:form.firstName.value,
-                                          lastName:form.lastName.value,
-                                          address:form.address.value,
-                                          city:form.city.value,
-                                          email:form.email.value
-          },products})})
-          .then((res)=>{
-            window.location.href=`confirmation.html?orderId=${res.orderId}`
-            //localStorage.clear()
-          })
-          .catch((error)=>console.log("Erreur : "+error))
-        
-      }
-      else{
-        alert("Votre panier est vide, veuillez séléctionner un produit avant de passer commande")
-      }
+function submitOrder(event) {
+    event.preventDefault();
+    if (validFirstName(form.firstName) && validLastName(form.lastName) && validAddress(form.address) && validCity(form.city) && validEmail(form.email)) {
+        if(getBasket())  {
+            let basket = JSON.parse(localStorage.getItem("basket"));
+            let products = []
+            for (let i = 0; i < basket.length; i++) {
+                products.push(basket[i].id)
+            }   
+            let contact={
+                firstName:form.firstName.value,
+                lastName:form.lastName.value,
+                address:form.address.value,
+                city:form.city.value,
+                email:form.email.value
+            }
+            fetch("http://localhost:3000/api/products/order", {
+                method:"POST",
+                headers:{
+                    "accept":"application/json",
+                    "content-type":"application/json"
+                },
+                body:JSON.stringify({contact,products})
+            })
+            .then(response => response.json())
+            .then(data => { 
+                console.log(data)
+                window.location.href=`confirmation.html?orderId=${data.orderId}`
+                localStorage.clear()
+            })
+            .catch((error)=>console.log("Erreur : " + error))        
+        } else{
+            alert("Votre panier est vide, veuillez séléctionner un produit avant de passer commande")
+        }
+    } else{
+        alert("Le formulaire n'est pas rempli correctement")
     }
-  else{
-    alert("Le formulaire n'est pas rempli correctement")
-  }
 }

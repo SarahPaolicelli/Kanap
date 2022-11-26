@@ -29,7 +29,7 @@ function showResult(data) {
       cart__items.insertAdjacentHTML("afterbegin",
         `<article class="cart__item" data-id="${product.id}" data-color="${product.color}">
       <div class="cart__item__img">
-        <img src="${productInfos.imageUrl}" alt="${productInfos.alt}">
+        <img src="${productInfos.imageUrl}" alt="${productInfos.altTxt}">
       </div>
       <div class="cart__item__content">
         <div class="cart__item__content__description">

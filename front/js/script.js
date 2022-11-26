@@ -1,11 +1,17 @@
-//Récuperation de tout les produits de l'API //
+/**
+ * Récupere tout les produits de l'API
+ */
 fetch("http://localhost:3000/api/products")
   .then(response=>response.json())
   .then(data=>{products(data)})
   .catch(err=>console.log("Il y'a une erreur:"+err))
 
 
-//Fonction d'affichage des produits dans la page index //
+/**
+ * Affiche les produits dans la page
+ * data : la liste des produits avec leurs caractéristiques 
+ * return : le code HTML dynamique
+ */
 function products(data){
   let sectionProducts=document.getElementById("items")
   for(let product of data){

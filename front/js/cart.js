@@ -1,13 +1,19 @@
 var items = null;
 
-//Récuperation de tout les produits de l'API //
+/**
+ * Récupere tout les produits de l'API
+ */
 fetch("http://localhost:3000/api/products")
   .then(response => response.json())
   .then(data => { items = data; showResult(data) })
   .catch(err => console.log("Il y'a une erreur: " + err))
 
 
-//Verifie si il y a deja qqch dans le panier//
+/**
+ * Vérifie si il y'a un item dans le panier du localStorage
+ * 
+ * return : rien si le panier est vide ou une valeur javascript
+ */
 function getBasket() {
   let basket = localStorage.getItem("basket")
   if (basket == null) {
@@ -18,7 +24,11 @@ function getBasket() {
   }
 }
 
-//affiche les caracteristiques qui correspondent aux articles dans le panier//
+/**
+ * affiche les caracteristiques qui correspondent aux articles dans le panier ou affiche que le panier est vide
+ * data : liste renvoyé par l'API avec tout les produits
+ * return : du HTML dynamique
+ */
 function showResult(data) {
   let productInfos
   let basket = getBasket()
@@ -56,29 +66,44 @@ function showResult(data) {
   }
 }
 
-//Calcule le prix total des produits dans le basket du localstorage//
+/**
+ * Calcule le prix total des produits dans le basket du localstorage
+ */
 function showBasketTotal(){
   let total = 0
   let qtyOfProduct=0
   let productInfo
   let basketItems = getBasket()
-    //boucle qui calcule le prix total
+
+    /**
+     *boucle qui calcule le prix total
+     */
     for (let basketItem of basketItems) {
       productInfo = items.find(obj => { return obj._id === basketItem.id })
       total += productInfo.price * basketItem.quantity
     }
-    //boucle qui calcule le nbr de produit total
+
+    /**
+     * boucle qui calcule le nbr de produit total
+     */
     for (let basketItem of basketItems) {
       productInfo = items.find(obj => { return obj._id === basketItem.id })
       qtyOfProduct+=basketItem.quantity
     }
-  //affiche le total (quantité puis prix) dans la page//
+
+  /**
+   * affiche le total (quantité puis prix) dans la page
+   */
   document.getElementById("totalQuantity").innerHTML=qtyOfProduct 
   document.getElementById("totalPrice").innerHTML=total
 }
 
 
-//Fonction qui gere la modification de quantité de produit//
+/*
+ * Modifie la quantité dans le panier
+ * event : evenement du clic sur le bouton
+ * return : rien 
+ */
 function changeQuantity(event) {
     let newQuantity = parseInt(event.target.value);
     if (newQuantity < 1 || newQuantity > 100) {
@@ -98,7 +123,7 @@ function changeQuantity(event) {
 }
 
 
-/**
+/*
  * Supprimer un item du panier
  * event : evenement du clic sur le bouton
  * return : rien 
@@ -121,7 +146,6 @@ function deleteCartItem(event) {
  * Au chargement de la page, init de tous les evenements
  */
 window.addEventListener('load', function(event) {
-    // Initialisation des evenements sur la page
 
     let quantityInputs = document.querySelectorAll(".itemQuantity")
     for (let quantityInput of quantityInputs) {
@@ -137,11 +161,16 @@ window.addEventListener('load', function(event) {
 })
 
 
-// Séléction zone de formulaire
+/**
+ * Sélection zone de formulaire
+ */
 let form = document.querySelector('.cart__order__form')
 
 
-//Vérification du prenom
+/**
+ * Vérification du prenom
+ * return : true ou false
+ */
 form.firstName.addEventListener('change', function() {validFirstName(this)})
 const validFirstName = function(inputFirstName){
   let firstNameRegExp=new RegExp(/^[a-zA-Zéè -]+$/)
@@ -156,7 +185,10 @@ const validFirstName = function(inputFirstName){
   }
 }
 
-//Vérification du nom
+/**
+ * Vérification du nom
+ * return : true ou false
+ */
 form.lastName.addEventListener('change', function() {validLastName(this)})
 const validLastName = function(inputLastName){
   let lastNameRegExp=new RegExp(/^[a-zA-Zéè -]+$/)
@@ -171,7 +203,10 @@ const validLastName = function(inputLastName){
   }
 }
 
-//Vérification de l'adresse
+/**
+ * Vérification de l'adresse
+ * return : true ou false
+ */
 form.address.addEventListener('change', function() {validAddress(this)})
 const validAddress = function(inputAddress){
   let addressRegExp=new RegExp(/^[a-zA-Z0-9éè -]+$/)
@@ -186,7 +221,10 @@ const validAddress = function(inputAddress){
   }
 }
 
-//Vérification de la ville
+/**
+ * Vérification de la ville
+ * return : true ou false
+ */
 form.city.addEventListener('change', function() {validCity(this)})
 const validCity = function(inputCity){
   let cityRegExp=new RegExp(/^[a-zA-Zéè -]+$/)
@@ -201,7 +239,10 @@ const validCity = function(inputCity){
   }
 }
 
-//Vérification du email
+/**
+ * Vérification du mail
+ * return : true ou false
+ */
 form.email.addEventListener('change', function() {validEmail(this)})
 const validEmail = function(inputEmail){
   let emailRegExp=new RegExp( /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i)
@@ -216,7 +257,11 @@ const validEmail = function(inputEmail){
   }
 }
 
-//fonction submitOrder
+/**
+ * validation de la commande
+ * event : clique sur le bouton "commander"
+ * return : redirection
+ */
 function submitOrder(event) {
     event.preventDefault();
     if (validFirstName(form.firstName) && validLastName(form.lastName) && validAddress(form.address) && validCity(form.city) && validEmail(form.email)) {

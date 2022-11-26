@@ -237,7 +237,13 @@ function submitOrder(){
           {method:"POST",
           headers:{"accept":"application/json",
                   "content-type":"application/json"},
-          body:JSON.stringify({contact,products})})
+          body:JSON.stringify({contact:{
+                                          firtName:form.firstName.value,
+                                          lastName:form.lastName.value,
+                                          address:form.address.value,
+                                          city:form.city.value,
+                                          email:form.email.value
+          },products})})
           .then((res)=>{
             window.location.href=`confirmation.html?orderId=${res.orderId}`
             //localStorage.clear()

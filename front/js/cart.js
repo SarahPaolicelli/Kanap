@@ -173,7 +173,7 @@ let form = document.querySelector('.cart__order__form')
  */
 form.firstName.addEventListener('change', function() {validFirstName(this)})
 const validFirstName = function(inputFirstName){
-  let firstNameRegExp=new RegExp(/^[a-zA-Zéè -]+$/)
+  let firstNameRegExp=new RegExp(/^[A-Za-z][A-Za-zéè -]+[a-z]$/)
   let firstNameErrorMsg=document.querySelector('#firstNameErrorMsg')
   if(firstNameRegExp.test(inputFirstName.value)==false){
     firstNameErrorMsg.innerHTML='Prénom erronée'
@@ -191,7 +191,7 @@ const validFirstName = function(inputFirstName){
  */
 form.lastName.addEventListener('change', function() {validLastName(this)})
 const validLastName = function(inputLastName){
-  let lastNameRegExp=new RegExp(/^[a-zA-Zéè -]+$/)
+  let lastNameRegExp=new RegExp(/^[A-Za-z][A-Za-zéè -]+[a-z]$/)
   let lastNameErrorMsg=document.querySelector('#lastNameErrorMsg')
   if(lastNameRegExp.test(inputLastName.value)==false){
     lastNameErrorMsg.innerHTML='Nom erronée'
@@ -209,7 +209,7 @@ const validLastName = function(inputLastName){
  */
 form.address.addEventListener('change', function() {validAddress(this)})
 const validAddress = function(inputAddress){
-  let addressRegExp=new RegExp(/^[a-zA-Z0-9éè -]+$/)
+  let addressRegExp=new RegExp(/^[A-Za-z0-9][A-Z0-9a-zéè -]+[a-z]$/)
   let addressErrorMsg=document.querySelector('#addressErrorMsg')
   if(addressRegExp.test(inputAddress.value)==false){
     addressErrorMsg.innerHTML='Adresse erronée'
@@ -227,7 +227,7 @@ const validAddress = function(inputAddress){
  */
 form.city.addEventListener('change', function() {validCity(this)})
 const validCity = function(inputCity){
-  let cityRegExp=new RegExp(/^[a-zA-Zéè -]+$/)
+  let cityRegExp=new RegExp(/^[A-Za-z][A-Za-zéè -]+[a-z]$/)
   let cityErrorMsg=document.querySelector('#cityErrorMsg')
   if(cityRegExp.test(inputCity.value)==false){
     cityErrorMsg.innerHTML='Ville erronée'
